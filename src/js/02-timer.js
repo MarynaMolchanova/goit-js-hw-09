@@ -1,14 +1,14 @@
-import flatpickr from "flatpickr";
-import "flatpickr/dist/flatpickr.min.css";
-import { Notify } from "notiflix/build/notiflix-notify-aio";
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const refs = {
-  inputDate: document.querySelector("#datetime-picker"),
-  buttonStart: document.querySelector("[data-start]"),
-  days: document.querySelector("[data-days]"),
-  hours: document.querySelector("[data-hours]"),
-  minutes: document.querySelector("[data-minutes]"),
-  seconds: document.querySelector("[data-seconds]"),
+  inputDate: document.querySelector('#datetime-picker'),
+  buttonStart: document.querySelector('[data-start]'),
+  days: document.querySelector('[data-days]'),
+  hours: document.querySelector('[data-hours]'),
+  minutes: document.querySelector('[data-minutes]'),
+  seconds: document.querySelector('[data-seconds]'),
 };
 
 let selectedTime = null;
@@ -23,9 +23,8 @@ const options = {
   onClose(selectedDates) {
     selectedTime = selectedDates[0].getTime();
     if (selectedTime < Date.now()) {
-      return Notify.failure("Please choose a date in the future");
+      return Notify.failure('Please choose a date in the future');
     }
-    console.log(selectedDates[0]);
     refs.buttonStart.disabled = false;
   },
 };
@@ -49,15 +48,15 @@ function onStopTimer() {
   clearInterval(idInterval);
 }
 
+function pad(value) {
+  return String(value).padStart(2, '0');
+}
+
 function changeTimer(time) {
   refs.days.textContent = pad(convertMs(time).days);
   refs.hours.textContent = pad(convertMs(time).hours);
   refs.minutes.textContent = pad(convertMs(time).minutes);
   refs.seconds.textContent = pad(convertMs(time).seconds);
-}
-
-function pad(value) {
-  return String(value).padStart(2, "0");
 }
 
 function convertMs(ms) {
@@ -79,9 +78,9 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
-console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
-console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
+// console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
+// console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
+// console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
 
 flatpickr(refs.inputDate, options);
-refs.buttonStart.addEventListener("click", onStartTimer);
+refs.buttonStart.addEventListener('click', onStartTimer);
