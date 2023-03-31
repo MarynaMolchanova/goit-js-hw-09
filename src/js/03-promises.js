@@ -4,33 +4,33 @@ const form = document.querySelector('.form');
 
 form.addEventListener('submit', onSubmitForm);
 
-function createPromise(position, delay) {
+function createPromise(position, delayValue) {
   const shouldResolve = Math.random() > 0.3;
 
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (shouldResolve) {
-        resolve({ position, delay });
+        resolve({ position, delayValue });
       } else {
-        reject({ position, delay });
+        reject({ position, delayValue });
       }
-    }, delay);
+    }, delayValue);
   });
 }
 
 function onSubmitForm(event) {
   event.preventDefault();
 
-  let delay = Number(form.delay.value);
+  let delayValue = Number(form.delay.value);
 
   for (let position = 1; position <= Number(form.amount.value); position += 1) {
-    createPromise(position, delay)
-      .then(({ position, delay }) => {
-        Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+    createPromise(position, delayValue)
+      .then(({ position, delayValue }) => {
+        Notify.success(`✅ Fulfilled promise ${position} in ${delayValue}ms`);
       })
       .catch(({ position, delay }) => {
-        Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+        Notify.failure(`❌ Rejected promise ${position} in ${delayValue}ms`);
       });
-    delay += Number(form.step.value);
+    delayValue += Number(form.step.value);
   }
 }
