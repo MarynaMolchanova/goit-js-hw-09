@@ -23,14 +23,13 @@ const options = {
   onClose(selectedDates) {
     selectedTime = selectedDates[0].getTime();
     if (selectedTime < Date.now()) {
-      return Notify.failure('Please choose a date in the future');
+      Notify.failure('Please choose a date in the future');
     }
     refs.buttonStart.disabled = false;
   },
 };
 
 function onStartTimer() {
-  refs.buttonStart.disabled = true;
   refs.inputDate.disabled = true;
 
   idInterval = setInterval(() => {
@@ -40,6 +39,7 @@ function onStartTimer() {
     if (deltaTime < 1000) {
       onStopTimer();
       refs.inputDate.disabled = false;
+      refs.buttonStart.disabled = true;
     }
   }, 1000);
 }
