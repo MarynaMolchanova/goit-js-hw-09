@@ -1,6 +1,6 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-const form = document.querySelector('.form');
+let form = document.querySelector('.form');
 
 form.addEventListener('submit', onSubmitForm);
 
@@ -33,4 +33,5 @@ function onSubmitForm(event) {
       });
     delayValue += Number(form.step.value);
   }
+  event.currentTarget.reset();
 }
