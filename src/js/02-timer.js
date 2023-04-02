@@ -12,51 +12,53 @@ const refs = {
 };
 
 let selectedTime = null;
-let idInterval = null;
 refs.buttonStart.disabled = true;
 
-const options = {
+const flatPicker = new flatpickr(refs.inputDate, {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    selectedTime = selectedDates[0].getTime();
-    if (selectedTime < Date.now()) {
+    selectedTime = selectedDates[0];
+    let currentTime = Date.now();
+    if (selectedDates[0] < currentTime) {
       Notify.failure('Please choose a date in the future');
+      refs.buttonStart.disabled = true;
+      return;
     }
     refs.buttonStart.disabled = false;
   },
-};
+});
 
-function onStartTimer() {
-  refs.inputDate.disabled = true;
+let idInterval = null;
+let timePeriod = null;
 
+refs.buttonStart.addEventListener('click', () => {
   idInterval = setInterval(() => {
-    const currentTime = Date.now();
-    const deltaTime = selectedTime - currentTime;
-    changeTimer(deltaTime);
-    if (deltaTime < 1000) {
-      onStopTimer();
-      refs.inputDate.disabled = false;
+    const startTime = selectedTime.getTime();
+    timePeriod = startTime - Date.now();
+
+    changeTimer();
+
+    if (timePeriod <= 1000 || timePeriod <= 0) {
       refs.buttonStart.disabled = true;
+      clearInterval(idInterval);
     }
   }, 1000);
-}
+});
 
-function onStopTimer() {
-  clearInterval(idInterval);
-}
-
-function pad(value) {
-  return String(value).padStart(2, '0');
-}
+// function pad(value) {
+//   return String(value).padStart(2, '0');
+// }
 
 function changeTimer(time) {
-  refs.days.textContent = pad(convertMs(time).days);
-  refs.hours.textContent = pad(convertMs(time).hours);
-  refs.minutes.textContent = pad(convertMs(time).minutes);
-  refs.seconds.textContent = pad(convertMs(time).seconds);
+  const milliseconds = convertMs(timePeriod);
+  const { days, hours, minutes, seconds } = milliseconds;
+  refs.days.textContent = `${days}`;
+  refs.hours.textContent = `${hours}`;
+  refs.minutes.textContent = `${minutes}`;
+  refs.seconds.textContent = `${seconds}`;
 }
 
 function convertMs(ms) {
@@ -81,6 +83,3 @@ function convertMs(ms) {
 // console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
 // console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
 // console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
-
-flatpickr(refs.inputDate, options);
-refs.buttonStart.addEventListener('click', onStartTimer);
